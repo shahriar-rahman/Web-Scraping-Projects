@@ -1,0 +1,10 @@
+
+Execution Time: 19.45,  Process Time: 0.2
+Execution Time: 19.9,  Process Time: 0.25
+Execution Time: 20.07,  Process Time: 0.17
+Execution Time: 20.85,  Process Time: 0.2
+Execution Time: 19.9,  Process Time: 0.25
+Execution Time: 22.45,  Process Time: 0.17
+Execution Time: 22.82,  Process Time: 0.19
+Execution Time: 22.16,  Process Time: 0.23
+Execution Time: 18.92,  Process Time: 0.09
