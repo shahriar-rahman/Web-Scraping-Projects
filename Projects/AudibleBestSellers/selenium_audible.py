@@ -72,7 +72,7 @@ class SeleniumDriver:
                 # Load next elements
                 next_button = self.driver.find_element(By.XPATH, "//span[contains(@class, 'nextButton')]")
 
-            except exception as ex:
+            except Exception as ex:
                 print("Failed to locate the next page.", ex)
 
             else:
@@ -90,7 +90,7 @@ class SeleniumDriver:
                                              'release_dates': self.release_dates[row]}
             print(self.df)
 
-        except exception as ex:
+        except Exception as ex:
             print("Transfer into the DataFrame Failed.", ex)
 
         else:
