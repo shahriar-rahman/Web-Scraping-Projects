@@ -1,7 +1,7 @@
 # Scraping-Amazon-Products-Search
 ==============================
 
-Scraping amazon products based on a user searched item.
+Scraping amazon products based on user's searched item.
 
 ## Project Organization
 ------------
