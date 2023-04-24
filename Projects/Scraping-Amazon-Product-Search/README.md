@@ -1,9 +1,9 @@
-Scraping-Amazon-Products-Search
+# Scraping-Amazon-Products-Search
 ==============================
 
 Scraping amazon products based on a user searched item.
 
-Project Organization
+## Project Organization
 ------------
 
     ├── LICENSE
@@ -35,5 +35,16 @@ Project Organization
 
 
 --------
+
+## Requirements
+• python-dotenv>=0.5.1
+
+• selenium
+
+• pandas
+
+• matplotlib
+
+• seaborn
 
 <p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
