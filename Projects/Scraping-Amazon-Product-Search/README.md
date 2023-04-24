@@ -1,7 +1,7 @@
-default_template_project
+Scraping-Amazon-Product
 ==============================
 
-This is a simple data science template project folder.
+Scraping amazon products based on a user searched item.
 
 Project Organization
 ------------
