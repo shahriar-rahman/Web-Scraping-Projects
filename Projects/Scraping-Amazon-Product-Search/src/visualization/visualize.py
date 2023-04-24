@@ -38,9 +38,10 @@ class DataAnalysis:
         for row in range(0, len(self.prices)):
             self.price_lists.append(self.prices[row].replace('$', ''))
 
+        self.rating_lists.sort(reverse=True)
+        self.price_lists.sort(reverse=True)
         print('-'*30, '\nRatings: ', self.rating_lists)
         print('Prices: ', self.price_lists, '\n', '-'*30, '\n')
-        pass
 
     def line_graph(self):
         # Axis Initialization
