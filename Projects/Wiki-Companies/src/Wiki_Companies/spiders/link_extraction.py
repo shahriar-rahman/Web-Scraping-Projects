@@ -28,7 +28,7 @@ class SpiderWiki(scrapy.Spider):
         except Exception as exc:
             print(f"!! Failed to load the {file_type} file. !!\n", exc)
 
-        finally:
+        else:
             print(f"{file_type} load successful.")
 
         self.direct_links = loader['Links']
@@ -140,5 +140,5 @@ class SpiderWiki(scrapy.Spider):
         except Exception as exc:
             print("!! Saving Failed. !!\n", exc)
 
-        finally:
+        else:
             print("○ Links update successful!\n\n")

@@ -50,7 +50,7 @@ class SpiderWiki(scrapy.Spider):
         except Exception as exc:
             print(f"!! Failed to save {self.type}. !!\n", exc)
 
-        finally:
+        else:
             print(f"○ Json file storage for {self.type} is successful!")
 
         # Links directed for company
@@ -68,7 +68,7 @@ class SpiderWiki(scrapy.Spider):
         except Exception as exc:
             print(f"!! Failed to save {self.type}. !!\n", exc)
 
-        finally:
+        else:
             print(f"○ Json file storage for {self.type} is successful!")
 
         # Display characteristic for regional links
@@ -84,7 +84,7 @@ class SpiderWiki(scrapy.Spider):
         except Exception as exc:
             print(f"!! Failed to load {self.type}. !!\n", exc)
 
-        finally:
+        else:
             json_object = json.dumps(loader, indent=4)
             print(json_object)
 
@@ -101,7 +101,7 @@ class SpiderWiki(scrapy.Spider):
         except Exception as exc:
             print(f"!! Failed to load {self.type}. !!\n", exc)
 
-        finally:
+        else:
             json_object = json.dumps(loader, indent=4)
             print(json_object)
         print('\n\n', '-' * 75)

@@ -15,6 +15,7 @@ class SpiderWiki(scrapy.Spider):
     cmp_title = []
     cmp_hq = []
     cmp_links = []
+    cmp_rev = []
 
     # Pagination
     def start_requests(self):
@@ -26,11 +27,144 @@ class SpiderWiki(scrapy.Spider):
         except Exception as exc:
             print("!! Exception encountered while accessing json file. !!\n", exc)
 
-        finally:
+        else:
             urls = links['Links']
 
             for url in urls:
                 yield scrapy.Request(url=url, callback=self.parse)
+
+    def attribute_search(self, response):
+        attribute_cols = ''
+        list_rev = []
+
+        # Search & scrape attribute headers
+        for row in range(1, 31):
+            try:
+                attribute_cols = response.xpath(self.keyword + f'tr[{row}]/th/text()').extract()
+
+            except Exception as exc:
+                print("!! Failed to extract revenue attribute. !!\n", exc)
+
+            # Alternate DOM structures
+            if not attribute_cols != []:
+                try:
+                    attribute_cols = response.xpath(self.keyword + f'tr[{row}]/th/a/text()').extract()
+                except Exception as exc:
+                    print("!! Alternate extraction of revenue failed. !!\n", exc)
+
+            if not attribute_cols != []:
+                try:
+                    attribute_cols = response.xpath(self.keyword + f'tr[{row}]/th/div/text()').extract()
+                except Exception as exc:
+                    print("!! Alternate extraction of revenue failed. !!\n", exc)
+
+            if not attribute_cols != []:
+                try:
+                    attribute_cols = response.xpath(self.keyword + f'tr[{row}]/th/div/a/text()').extract()
+                except Exception as exc:
+                    print("!! Alternate extraction of revenue failed. !!\n", exc)
+
+            if not attribute_cols != []:
+                try:
+                    attribute_cols = response.xpath(self.keyword + f'tr[{row}]/th/span/text()').extract()
+                except Exception as exc:
+                    print("!! Alternate extraction of revenue failed. !!\n", exc)
+
+            if not attribute_cols != []:
+                try:
+                    attribute_cols = response.xpath(self.keyword + f'tr[{row}]/th/span/a/text()').extract()
+                except Exception as exc:
+                    print("!! Alternate extraction of revenue failed. !!\n", exc)
+
+            attribute_cols = ''.join(attribute_cols).replace('\n', '')
+            list_rev.append(attribute_cols)
+        return list_rev
+
+    def attribute_scraping(self, response, row):
+        accumulated_value = 0
+
+        try:
+            revenue = response.xpath(self.keyword + f'tr[{row}]/td/span/text()').extract()
+
+        except Exception as exc:
+            print("Clause #1 failed. Transitioning to the next clause.\n", exc)
+
+        else:
+            accumulated_value = ''.join(revenue)
+
+        try:
+            revenue = response.xpath(self.keyword + f'tr[{row}]/td/text()').extract()
+
+        except Exception as exc:
+            print("Clause #2 failed. Transitioning to the next clause.\n", exc)
+
+        else:
+            accumulated_value = accumulated_value + ' '.join(revenue).replace('  ', ' ')
+
+        try:
+            revenue = response.xpath(self.keyword + f'tr[{row}]/td/div/text()').extract()
+
+        except Exception as exc:
+            print("Clause #3 failed. Transitioning to the next clause.\n", exc)
+
+        else:
+            accumulated_value = accumulated_value + ' '.join(revenue).replace('  ', ' ')
+
+        try:
+            revenue = response.xpath(self.keyword + f'tr[{row}]/td/div/a/text()').extract()
+
+        except Exception as exc:
+            print("Clause #4 failed. Transitioning to the next clause.\n", exc)
+
+        else:
+            accumulated_value = accumulated_value + ' '.join(revenue).replace('  ', ' ')
+
+        try:
+            revenue = response.xpath(self.keyword + f'tr[{row}]/td/a/text()').extract()
+
+        except Exception as exc:
+            print("Clause #5 failed. Transitioning to the next clause.\n", exc)
+
+        else:
+            accumulated_value = accumulated_value + ' '.join(revenue).replace('  ', ' ')
+
+        try:
+            revenue = response.xpath(self.keyword + f'tr[{row}]/td/span/a/text()').extract()
+
+        except Exception as exc:
+            print("Clause #6 failed. Transitioning to the next clause.\n", exc)
+
+        else:
+            accumulated_value = accumulated_value + ' '.join(revenue).replace('  ', ' ')
+
+        try:
+            revenue = response.xpath(self.keyword + f'tr[{row}]/td/span/span/text()').extract()
+
+        except Exception as exc:
+            print("Clause #7 failed. Transitioning to the next clause.\n", exc)
+
+        else:
+            accumulated_value = accumulated_value + ' '.join(revenue).replace('  ', ' ')
+
+        try:
+            revenue = response.xpath(self.keyword + f'tr[{row}]/td/span/span/a/text()').extract()
+
+        except Exception as exc:
+            print("Clause #8 failed. Transitioning to the next clause.\n", exc)
+
+        else:
+            accumulated_value = accumulated_value + ' '.join(revenue).replace('  ', ' ')
+
+        try:
+            revenue = response.xpath(self.keyword + f'tr[{row}]/td/div/span/a/text()').extract()
+
+        except Exception as exc:
+            print("Clause #9 failed. Revenue value could be unavailable.\n", exc)
+
+        else:
+            accumulated_value = accumulated_value + ' '.join(revenue).replace('  ', ' ')
+
+        return accumulated_value
 
     # Page parsing
     def parse(self, response, **kwargs):
@@ -110,26 +244,84 @@ class SpiderWiki(scrapy.Spider):
                     except Exception as exc:
                         print("!! Operation #5 failed, data could be unavailable. !!\n", exc)
 
+        attribute_cols = self.attribute_search(response)
+
+        # Debugging
+        print('◘ Columns info: \n', attribute_cols, '\n')
+
+        # Revenue
+        row = 0
+        filtered_rev = ''
+
+        # Detect rows
+        if 'Revenue' in ''.join(attribute_cols):
+            try:
+                row = attribute_cols.index('Revenue') + 1
+
+            except Exception as exc:
+                print("!! Revenue could not be located. !!\n", exc)
+                self.wiki_item['revenue'] = ''
+
+            else:
+                print('-' * 75)
+                print("Revenue located in row #", row)
+
+                # Scraping method
+                self.wiki_item['revenue'] = self.attribute_scraping(response, row)
+
+        else:
+            self.wiki_item['revenue'] = ''
+
         # Filter containers
-        filtered_title = ''.join(self.wiki_item['title']).replace(' - Wikipedia', '')
-        filtered_hq = ' '.join(self.wiki_item['hq']).replace('\n', '').replace(',', ' ')
-        filtered_links = ''.join(self.wiki_item['link'])
+        try:
+            filtered_title = ''.join(self.wiki_item['title']).replace(' - Wikipedia', '')
+
+        except Exception as exc:
+            filtered_title = ''
+            print("!! The Page is missing title. !!\n", exc)
+
+        try:
+            filtered_hq = ' '.join(self.wiki_item['hq']).replace('\n', '').replace(',', ' ')
+
+        except Exception as exc:
+            filtered_hq = ''
+            print("!! Hq does not exist in this page. !!\n", exc)
+
+        try:
+            filtered_links = ''.join(self.wiki_item['link'])
+
+        except Exception as exc:
+            filtered_links = ''
+            print("!! Link does not exist in this page. !!\n", exc)
+
+        try:
+            filtered_rev = ''.join(self.wiki_item['revenue']).lstrip().replace('  ', ' ').replace('\n', '')
+            filtered_rev = filtered_rev.replace('\n', ' ')
+
+        except Exception as exc:
+            filtered_rev = ''
+            print("!! Revenue does not exist in this page. !!\n", exc)
+
+        finally:
+            self.wiki_item['revenue'] = filtered_rev
 
         # Storage
         self.cmp_title.append(filtered_title)
         self.cmp_hq.append(filtered_hq)
         self.cmp_links.append(filtered_links)
+        self.cmp_rev.append(filtered_rev)
 
         # System queue
         t.sleep(0.15)
         print('-' * 70, '\n')
         yield self.wiki_item
 
-    # Post-crawl method
+    # Post-crawl condition
     def closed(self, response, **kwargs):
         # Firmographics dictionary
         print('\n\n', 'Operation successful, saving data to memory...\n')
-        firmographics_json = {'title': self.cmp_title, 'hq': self.cmp_hq, 'link': self.cmp_links}
+        firmographics_json = {'title': self.cmp_title, 'hq': self.cmp_hq, 'link': self.cmp_links,
+                              'revenue': self.cmp_rev}
 
         # Save data to memory
         try:
@@ -139,7 +331,7 @@ class SpiderWiki(scrapy.Spider):
         except Exception as exc:
             print("!! Error encountered while saving. !!\n", exc)
 
-        finally:
+        else:
             print("○ Firmographics updated successfully")
         print('-' * 50, '\n')
 
@@ -148,6 +340,7 @@ class SpiderWiki(scrapy.Spider):
         print('•Company Title:', self.cmp_title)
         print('•Company HQ:', self.cmp_hq)
         print('•Company Link:', self.cmp_links)
+        print('•Company Revenue:', self.cmp_rev)
         print('-' * 50, '\n')
 
         # Display data to terminal
@@ -158,6 +351,6 @@ class SpiderWiki(scrapy.Spider):
         except Exception as exc:
             print("!! Error encountered while loading. !!\n", exc)
 
-        finally:
+        else:
             json_object = json.dumps(loader, indent=4)
             print(json_object)
