@@ -10,11 +10,11 @@ Project Organization
     ├── Makefile           <- Makefile with commands like `make data` or `make train`
     ├── README.md          <- The top-level README for developers using this project.
     ├── data
-    │   ├── external       <- Data acquired directly from the python datataframe script
-    │   ├── processed      <- Processed Data for deep introspection
-    │   └── raw            <- The original, immutable data dump.
+    │   ├── csv            <- Data generated in csv format from the raw json file.
+    │   ├── excel          <- For better data analysis, generated in excel format from the raw json file.
+    │   └── Json           <- The original, immutable data dump.
     │
-    ├── docs               <- A Powerpoint slide is uploaded to visualize the scraping approach.
+    ├── docs               <- A Powerpoint slide is uploaded to illustrate the scraping approach.
     │
     │
     ├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
