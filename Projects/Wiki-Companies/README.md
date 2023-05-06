@@ -9,7 +9,7 @@ Project Organization
     ├── LICENSE
     ├── Makefile           <- Makefile with commands like `make data` or `make train`
     ├── README.md          <- The top-level README for developers using this project.
-    ├── data
+    ├── scraped_data
     │   ├── csv            <- Data generated in csv format from the raw json file.
     │   ├── excel          <- For better data analysis, generated in excel format from the raw json file.
     │   └── Json           <- The original, immutable data dump.
