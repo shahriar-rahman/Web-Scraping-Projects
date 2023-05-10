@@ -12,3 +12,12 @@ class WikiCompaniesItem(scrapy.Item):
     title = scrapy.Field()
     hq = scrapy.Field()
     link = scrapy.Field()
+    revenue = scrapy.Field()
+    employee = scrapy.Field()
+    # website = scrapy.Field()
+    op_income = scrapy.Field()
+    net_income = scrapy.Field()
+    total_assets = scrapy.Field()
+    total_equity = scrapy.Field()
+    website = scrapy.Field()
+

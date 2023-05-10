@@ -7,6 +7,7 @@ class SpiderWiki(scrapy.Spider):
     # Set ups
     name = 'spider_extraction'
     root_link = 'https://en.wikipedia.org/'
+    keyword_id = '//*[@id="mw-content-text"]'
     direct_links = []
 
     # Pagination
@@ -46,7 +47,7 @@ class SpiderWiki(scrapy.Spider):
             print('\n\n', '-' * 75)
             print("◘ Extraction from Table #", table, ":")
 
-            tabular_keyword = f'//*[@id="mw-content-text"]/div[1]/table[{table}]'
+            tabular_keyword = self.keyword_id + f'/div[1]/table[{table}]'
             try:
                 headers = response.xpath(tabular_keyword + '/tbody/tr/th/text()').extract()
 
@@ -66,16 +67,14 @@ class SpiderWiki(scrapy.Spider):
 
             # Extract all types of links from the appropriate column
             try:
-                links_tabular = response.xpath(
-                    f'//*[@id="mw-content-text"]/div[1]/table[{table}]/tbody/tr/td[{index}]/a/@href') \
-                    .extract()
+                links_tabular = response.xpath(self.keyword_id +
+                                               f'/div[1]/table[{table}]/tbody/tr/td[{index}]/a/@href').extract()
             except Exception as exc:
                 print("!! Exception encountered while accessing table. !!\n", exc)
 
             try:
-                links_italics = response.xpath(
-                    f'//*[@id="mw-content-text"]/div[1]/table[{table}]/tbody/tr/td[{index}]/i/a/@href') \
-                    .extract()
+                links_italics = response.xpath(self.keyword_id +
+                                               f'/div[1]/table[{table}]/tbody/tr/td[{index}]/i/a/@href').extract()
 
             except Exception as exc:
                 print("!! Exception encountered while accessing table. !!\n", exc)
@@ -100,7 +99,7 @@ class SpiderWiki(scrapy.Spider):
         links_categorical_2 = []
 
         print('\n◘ Extraction from Categorical groupings:')
-        categorical_keyword = '//*[@id="mw-content-text"]/div'
+        categorical_keyword = self.keyword_id + '/div'
 
         try:
             links_categorical_1 = response.xpath(categorical_keyword + '/ul/li/a/@href').extract()
