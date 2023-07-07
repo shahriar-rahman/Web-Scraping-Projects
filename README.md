@@ -1,4 +1,4 @@
 # Web-Scraping
-Work In Progress..
+Work In Progress..Requires restructuring.
 Web Scraping Projects using Python
 
